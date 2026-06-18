@@ -51,6 +51,21 @@ twine check dist/*
 ETA variable URIs are device-specific. For an ETA PU15, discover them through
 `/user/menu` and inspect writable values through `/user/varinfo/<uri>`.
 
+## Discovery Helpers
+
+The package includes helpers to flatten the ETA menu tree and select conservative
+default discovery candidates:
+
+```python
+from etatouch_restful import flatten_menu, is_default_discovery_candidate
+
+variables = [
+    variable
+    for variable in flatten_menu(await client.get_menu())
+    if is_default_discovery_candidate(variable)
+]
+```
+
 ## Repository Setup
 
 Empfohlene GitHub-Repo-Einstellungen:
