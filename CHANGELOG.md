@@ -2,6 +2,10 @@
 
 All notable changes to `py-etatouch-restful` will be documented in this file.
 
+## 0.2.0 - Unreleased
+
+- Add menu-tree discovery helpers for Home Assistant entity discovery.
+
 ## 0.1.0 - 2026-06-18
 
 - Initial async ETA Touch REST client.
