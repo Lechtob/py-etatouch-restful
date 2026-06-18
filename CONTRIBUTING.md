@@ -13,13 +13,14 @@ This project follows GitFlow:
 ## Local Checks
 
 ```powershell
-python -m pip install -e ".[test]"
+python -m pip install -e ".[test,build]"
 ruff check .
 pytest
+python -m build
+twine check dist/*
 ```
 
 ## Scope
 
 Keep this package independent from Home Assistant. It should only contain the ETA Touch
 HTTP/XML client, models, parser logic and tests.
-

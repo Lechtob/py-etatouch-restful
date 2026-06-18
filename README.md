@@ -1,31 +1,55 @@
 # py-etatouch-restful
 
-Async Python client fuer die ETA Touch RESTful Webservices.
+Async Python client for ETA Touch RESTful Webservices.
 
-Die ETA-Dokumentation beschreibt die Webservices unter `http://<eta-ip>:8080`:
+The ETA documentation exposes the webservices at `http://<eta-ip>:8080`:
 
-- `GET /user/api`: API-Version lesen.
-- `GET /user/menu`: Menuebaum lesen.
-- `GET /user/var/<uri>`: einzelne Variable lesen.
-- `POST /user/var/<uri>`: schreibbare Variable setzen.
-- `GET/PUT/DELETE /user/vars`: temporaere Variablensets verwalten.
-- `GET /user/errors`: aktive Fehler lesen.
-- `GET /user/varinfo/<uri>`: Metadaten und gueltige Werte lesen.
+- `GET /user/api`: read the API version.
+- `GET /user/menu`: read the menu tree.
+- `GET /user/var/<uri>`: read a single variable.
+- `POST /user/var/<uri>`: set a writable variable.
+- `GET/PUT/DELETE /user/vars`: manage temporary variable sets.
+- `GET /user/errors`: read active errors.
+- `GET /user/varinfo/<uri>`: read variable metadata and valid values.
 
-## Beispiel
+## Installation
 
-```python
-from etatouch_restful import EtaTouchClient
-
-async with EtaTouchClient("192.168.1.50") as client:
-    api_version = await client.get_api_version()
-    value = await client.get_variable("112/10021/0/0/12112")
+```powershell
+python -m pip install py-etatouch-restful
 ```
 
-## Hinweis
+## Example
 
-Variablen-URIs sind geraetespezifisch. Fuer einen ETA PU15 koennen sie aus `/user/menu`
-und `/user/varinfo/...` abgeleitet werden.
+```python
+import asyncio
+
+from etatouch_restful import EtaTouchClient
+
+
+async def main() -> None:
+    async with EtaTouchClient("192.168.1.50") as client:
+        api_version = await client.get_api_version()
+        value = await client.get_variable("112/10021/0/0/12112")
+        print(api_version, value.str_value, value.native_value)
+
+
+asyncio.run(main())
+```
+
+## Development
+
+```powershell
+python -m pip install -e ".[test,build]"
+ruff check .
+pytest
+python -m build
+twine check dist/*
+```
+
+## Notes
+
+ETA variable URIs are device-specific. For an ETA PU15, discover them through
+`/user/menu` and inspect writable values through `/user/varinfo/<uri>`.
 
 ## Repository Setup
 
@@ -51,5 +75,5 @@ git push -u origin develop
 
 ## Release Notes
 
-Vor dem ersten HACS/Core-nahen Einsatz sollte dieses Paket auf PyPI veroeffentlicht
-werden, damit Home Assistant es ueber `requirements` installieren kann.
+Releases are published from GitHub Releases through PyPI Trusted Publishing. See
+`RELEASE.md`.
