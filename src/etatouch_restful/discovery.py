@@ -23,21 +23,45 @@ EXCLUDED_PATH_PARTS = frozenset(
     }
 )
 
-PREFERRED_PATH_PARTS = frozenset(
+EXCLUDED_NAME_PARTS = frozenset(
     {
-        "Eingänge",
-        "Ausgänge",
-        "Kessel",
-        "Puffer",
-        "Warmwasser",
-        "Solar",
-        "Zähler",
-        "Counters",
-        "Temperatur",
-        "Vorlauf",
-        "Rücklauf",
+        "Absenkung",
+        "Ausschalt",
+        "Einschalt",
+        "Fixwert",
+        "Kalibrier",
+        "Max",
+        "Maximal",
+        "Min",
+        "Mindest",
+        "Name",
+        "Nenn",
+        "Soll",
+        "Typ",
+        "Verzögerung",
+        "Zeitüberwachung",
+    }
+)
+
+PREFERRED_NAME_PARTS = frozenset(
+    {
+        "Anforderung",
         "Außentemperatur",
+        "Austragleistung",
+        "Drehzahl",
+        "Eingang",
+        "Ist",
+        "Leistung",
+        "Luftfeuchte",
+        "Rücklauf",
+        "Strom",
         "Status",
+        "Temperatur",
+        "Ventilzustand",
+        "Vorlauf",
+        "Warmwasserspeicher",
+        "Zähler",
+        "Zustand",
     }
 )
 
@@ -76,9 +100,10 @@ def is_default_discovery_candidate(variable: EtaDiscoveredVariable) -> bool:
     path_parts = set(variable.path)
     if path_parts & EXCLUDED_PATH_PARTS:
         return False
-    if path_parts & PREFERRED_PATH_PARTS:
-        return True
-    return any(part in variable.name for part in PREFERRED_PATH_PARTS)
+    full_name = variable.full_name
+    if any(part in full_name for part in EXCLUDED_NAME_PARTS):
+        return False
+    return any(part in full_name for part in PREFERRED_NAME_PARTS)
 
 
 def _flatten_node(
