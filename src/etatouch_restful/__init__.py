@@ -1,7 +1,9 @@
 """Async client for ETA Touch RESTful Webservices."""
 
 from .exceptions import EtaTouchConnectionError, EtaTouchError, EtaTouchResponseError
-from .models import EtaError, EtaMenuNode, EtaValue, EtaVariableInfo, EtaVariableSet
+from .models import EtaError, EtaMenuNode, EtaValidValue, EtaValue, EtaVariableInfo, EtaVariableSet
+
+__version__ = "0.1.0"
 
 __all__ = [
     "EtaError",
@@ -10,9 +12,11 @@ __all__ = [
     "EtaTouchConnectionError",
     "EtaTouchError",
     "EtaTouchResponseError",
+    "EtaValidValue",
     "EtaValue",
     "EtaVariableInfo",
     "EtaVariableSet",
+    "__version__",
 ]
 
 

@@ -118,7 +118,11 @@ class EtaTouchClient:
 
         return parse_variable_set(await self._request("GET", f"/user/vars/{name}"))
 
-    async def get_errors(self, node_id: int | None = None, fub_id: int | None = None) -> list[EtaError]:
+    async def get_errors(
+        self,
+        node_id: int | None = None,
+        fub_id: int | None = None,
+    ) -> list[EtaError]:
         """Read active ETA errors."""
 
         path = "/user/errors"
@@ -159,4 +163,3 @@ class EtaTouchClient:
 
 def _clean_uri(uri: str) -> str:
     return uri.strip().strip("/")
-

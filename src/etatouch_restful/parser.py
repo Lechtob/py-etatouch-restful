@@ -36,7 +36,10 @@ def parse_value(xml: str) -> EtaValue:
 
 def parse_variable_sets(xml: str) -> list[str]:
     root = _root(xml)
-    return [element.attrib["uri"].removeprefix("/user/vars/") for element in root.findall("eta:vars", NS)]
+    return [
+        element.attrib["uri"].removeprefix("/user/vars/")
+        for element in root.findall("eta:vars", NS)
+    ]
 
 
 def parse_variable_set(xml: str) -> EtaVariableSet:
@@ -46,7 +49,9 @@ def parse_variable_set(xml: str) -> EtaVariableSet:
         raise EtaTouchResponseError("ETA Touch response did not contain a vars element")
     return EtaVariableSet(
         uri=vars_element.attrib.get("uri", ""),
-        variables=tuple(_parse_value(element) for element in vars_element.findall("eta:variable", NS)),
+        variables=tuple(
+            _parse_value(element) for element in vars_element.findall("eta:variable", NS)
+        ),
     )
 
 
@@ -148,4 +153,3 @@ def _float_attr(element: ET.Element, name: str, default: float) -> float:
 
 def _local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
-
