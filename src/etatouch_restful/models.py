@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from math import isfinite
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,9 +23,10 @@ class EtaValue:
         """Return a scaled numeric value when possible, otherwise the formatted string."""
 
         try:
-            return int(self.raw) / self.scale_factor
+            value = float(self.raw) / self.scale_factor
         except (TypeError, ValueError, ZeroDivisionError):
             return self.str_value
+        return value if isfinite(value) else self.str_value
 
 
 @dataclass(frozen=True, slots=True)
