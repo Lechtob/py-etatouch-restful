@@ -4,6 +4,8 @@ All notable changes to `py-etatouch-restful` will be documented in this file.
 
 ## Unreleased
 
+## 0.2.1 - 2026-09-24
+
 - Parse numeric raw values in scientific and decimal notation, including runtime
   counters, without falling back to formatted text. Non-finite values retain the
   display-text fallback.
