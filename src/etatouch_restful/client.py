@@ -141,7 +141,7 @@ class EtaTouchClient:
         session = await self._get_session()
         url = f"{self.base_url}{path}"
         try:
-            async with session.request(method, url, **kwargs) as response:
+            async with session.request(method, url, timeout=self._timeout, **kwargs) as response:
                 text = await response.text(encoding="utf-8")
                 if response.status >= 400:
                     raise EtaTouchResponseError(

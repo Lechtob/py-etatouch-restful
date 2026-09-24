@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import aiohttp
 import pytest
 
-from etatouch_restful import EtaTouchClient
+from etatouch_restful import EtaTouchClient, EtaTouchConnectionError
 
 
 class FakeResponse:
@@ -45,7 +46,9 @@ async def test_get_api_version_requests_expected_path() -> None:
     client = EtaTouchClient("192.168.1.50", session=session)
 
     assert await client.get_api_version() == "1.2"
-    assert session.calls == [("GET", "http://192.168.1.50:8080/user/api", {})]
+    assert session.calls == [
+        ("GET", "http://192.168.1.50:8080/user/api", {"timeout": aiohttp.ClientTimeout(total=10)})
+    ]
 
 
 @pytest.mark.asyncio
@@ -68,6 +71,31 @@ async def test_set_variable_posts_raw_value_and_time_slot() -> None:
         (
             "POST",
             "http://eta.local:8080/user/var/112/10111/12130/0/1082",
-            {"data": {"value": "400", "begin": "0", "end": "48"}},
+            {
+                "data": {"value": "400", "begin": "0", "end": "48"},
+                "timeout": aiohttp.ClientTimeout(total=10),
+            },
         )
     ]
+
+
+@pytest.mark.asyncio
+async def test_custom_timeout_with_borrowed_session() -> None:
+    session = FakeSession(
+        FakeResponse(200, '<eta xmlns="http://www.eta.co.at/rest/v1"><api version="1.2" /></eta>')
+    )
+    async with EtaTouchClient("eta.test", session=session, timeout=3) as client:
+        assert await client.get_api_version() == "1.2"
+    assert session.calls[0][2]["timeout"].total == 3
+    # A borrowed session has no close method and must remain owned by its caller.
+
+
+@pytest.mark.asyncio
+async def test_timeout_becomes_connection_error() -> None:
+    class TimeoutSession:
+        def request(self, *args, **kwargs):
+            raise TimeoutError
+
+    client = EtaTouchClient("eta.test", session=TimeoutSession(), timeout=3)
+    with pytest.raises(EtaTouchConnectionError, match="Timed out"):
+        await client.get_api_version()
